@@ -1,6 +1,7 @@
 import express, { type Express, type Request, type Response } from 'express';
 import cors from "cors";
 import dotenv from 'dotenv';
+import podRouter from './routes/pod.routes';
 
 dotenv.config();
 
@@ -20,6 +21,8 @@ app.get('/health', (req: Request, res: Response) => {
         message: 'Backend is running smoothly'
     });
 });
+
+app.use('/api/pods', podRouter);
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
