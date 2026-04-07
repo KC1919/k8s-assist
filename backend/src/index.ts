@@ -2,11 +2,12 @@ import express, { type Express, type Request, type Response } from 'express';
 import cors from "cors";
 import dotenv from 'dotenv';
 import podRouter from './routes/pod.routes';
+import { errorHandler, notFoundHandler } from './middlewares/error.middleware';
 
 dotenv.config();
 
 const app: Express = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5050;
 
 app.use(cors());
 app.use(express.json());
@@ -23,6 +24,9 @@ app.get('/health', (req: Request, res: Response) => {
 });
 
 app.use('/api/pods', podRouter);
+
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);

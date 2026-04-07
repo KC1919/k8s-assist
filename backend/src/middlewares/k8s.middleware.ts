@@ -6,7 +6,7 @@ export function injectServices(req: Request, res: Response, next: NextFunction) 
 
   // attach to request
   (req as any).services = {
-    podService: new PodService(context),
+    podService: new PodService(),
   };
 
   next();
