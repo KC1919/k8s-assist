@@ -2,6 +2,7 @@ import express, { type Express, type Request, type Response } from 'express';
 import cors from "cors";
 import dotenv from 'dotenv';
 import podRouter from './routes/pod.routes';
+import namespaceRouter from './routes/namespace.routes';
 import { errorHandler, notFoundHandler } from './middlewares/error.middleware';
 
 dotenv.config();
@@ -24,6 +25,7 @@ app.get('/health', (req: Request, res: Response) => {
 });
 
 app.use('/api/pods', podRouter);
+app.use('/api/namespaces', namespaceRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
