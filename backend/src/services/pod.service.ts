@@ -10,4 +10,15 @@ export class PodService extends K8sService {
     const res = await this.coreApi.listPodForAllNamespaces();
     return res.items;
   }
+
+  async getPodLogs({ podName, namespace, container }: { podName: string; namespace: string; container?: string }) {
+    
+    const res = await this.coreApi.readNamespacedPodLog({
+      name: podName,
+      namespace,
+      container
+    });
+
+    return res;
+  }
 }
