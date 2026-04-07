@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { formattedPod } from "../types/pod.types";
+import { Pod } from "../types/k8s.types";
 
 
 export const listPods = async (req: Request, res: Response, next: NextFunction) => {
@@ -7,7 +7,7 @@ export const listPods = async (req: Request, res: Response, next: NextFunction) 
         const { podService } = (req as any).services;
         const pods = await podService.getPods(req.query.namespace as string);
 
-        const formattedPods: formattedPod[] = pods.map((pod: any) => ({
+        const formattedPods: Pod[] = pods.map((pod: any) => ({
             name: pod.metadata.name,
             namespace: pod.metadata.namespace,
             status: pod.status.phase,
