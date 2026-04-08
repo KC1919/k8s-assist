@@ -1,7 +1,13 @@
-export class ApiResponse {
+export class ApiResponse<T> {
+    success: boolean;
+    data: T;
+    message: string;
   constructor(
-    public success: boolean,
-    public data: any,
-    public message: string = ""
-  ) {}
+    data: T,
+    message: string = "Success"
+  ) {
+    this.success = true;
+    this.data = data;
+    this.message = message; 
+  }
 }

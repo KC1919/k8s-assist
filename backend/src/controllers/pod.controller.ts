@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Pod } from "../types/k8s.types";
 import { AppError } from "../utils/AppError";
+import { ApiResponse } from "../utils/apiResponse";
 
 export const listPods = async (
     req: Request,
@@ -26,7 +27,7 @@ export const listPods = async (
             restartCount: container.restartCount,
         })),
     }));
-    res.json(formattedPods);
+    res.status(200).json(new ApiResponse(formattedPods, "Pods fetched successfully"));
 };
 
 export const getPodLogs = async (
@@ -52,7 +53,7 @@ export const getPodLogs = async (
         container,
     });
 
-    res.send(podLogs);
+    res.status(200).json(new ApiResponse(podLogs, "Pod logs fetched successfully"));
 };
 
 export const getPodDetails = async (
@@ -86,7 +87,7 @@ export const getPodDetails = async (
         ),
     };
 
-    res.json(formattedPod);
+    res.status(200).json(new ApiResponse(formattedPod, "Pod details fetched successfully"));
 };
 
 export const deletePod = async (
@@ -107,5 +108,5 @@ export const deletePod = async (
 
     const response = await podService.deletePod(name, namespace);
 
-    res.json(response);
+    res.status(204).json(new ApiResponse(null, response.message));
 }

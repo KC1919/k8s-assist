@@ -1,13 +1,17 @@
+import logger from "../utils/logger";
 import { K8sService } from "./k8s.service";
 
 export class PodService extends K8sService {
   async getPods(namespace?: string) {
+    
     if (namespace) {
       const res = await this.coreApi.listNamespacedPod({ namespace });
+      logger.info(`Fetched ${res.items.length} pods from namespace ${namespace}`);
       return res.items;
     }
 
     const res = await this.coreApi.listPodForAllNamespaces();
+    logger.info(`Fetched ${res.items.length} pods from all namespaces`);
     return res.items;
   }
 

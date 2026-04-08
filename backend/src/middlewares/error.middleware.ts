@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import ErrorWithStatus from '../types/error.types';
+import logger from '../utils/logger';
+import path from 'node:path';
 
 export function errorHandler(
   err: ErrorWithStatus,
@@ -15,6 +17,15 @@ export function errorHandler(
   if (process.env.NODE_ENV !== 'production' && err.details) {
     responseBody.details = err.details;
   }
+
+  logger.error({
+    message: err.message,
+    status,
+    stack: err.stack,
+    details: err.details,
+    path: req.originalUrl,
+    method: req.method
+  });
 
   res.status(status).json(responseBody);
 }

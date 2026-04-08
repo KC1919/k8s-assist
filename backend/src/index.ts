@@ -6,6 +6,7 @@ import podRouter from './routes/pod.routes';
 import namespaceRouter from './routes/namespace.routes';
 import { errorHandler, notFoundHandler } from './middlewares/error.middleware';
 import { setupLogSocket } from './websocket/logs.socket';
+import { requestLogger } from './middlewares/logger.middleware';
 
 dotenv.config();
 
@@ -28,6 +29,8 @@ app.get('/health', (req: Request, res: Response) => {
         message: 'Backend is running smoothly'
     });
 });
+
+app.use(requestLogger);
 
 app.use('/api/pods', podRouter);
 app.use('/api/namespaces', namespaceRouter);

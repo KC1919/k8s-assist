@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { Namespace } from "../types/k8s.types";
 import { AppError } from "../utils/AppError";
+import { ApiResponse } from "../utils/apiResponse";
 
 export const listNamespaces = async (req: Request, res: Response, next: NextFunction) => {
     const { namespaceService } = (req as any).services;
@@ -11,7 +12,7 @@ export const listNamespaces = async (req: Request, res: Response, next: NextFunc
         name: ns.metadata?.name,
     }));
 
-    res.json(formatted);
+    res.status(200).json(new ApiResponse(formatted, "Namespaces fetched successfully"));
 }
 
 export const createNamespace = async (req: Request, res: Response, next: NextFunction) => {
@@ -24,5 +25,5 @@ export const createNamespace = async (req: Request, res: Response, next: NextFun
 
     const response = await namespaceService.createNamespace(namespace);
 
-    res.json(response);
+    res.status(201).json(new ApiResponse(response, "Namespace created successfully"));
 }
