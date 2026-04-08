@@ -21,4 +21,21 @@ export class PodService extends K8sService {
 
     return res;
   }
+
+  async getPodDetails(podName: string, namespace: string){
+    const res = await this.coreApi.readNamespacedPod({
+      name: podName,
+      namespace
+    });
+    return res;
+  }
+
+  async deletePod(podName: string, namespace: string){
+    const res = await this.coreApi.deleteNamespacedPod({
+      name: podName,
+      namespace
+    });
+
+    return { message: "Pod deleted successfully" };
+  }
 }

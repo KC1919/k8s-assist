@@ -9,6 +9,8 @@ export interface Pod {
     namespace: string;
     status: string;
     nodeName: string;
+    labels?: {},
+    restartCount?: number
     containers: [{
         name: string;
         image: string;

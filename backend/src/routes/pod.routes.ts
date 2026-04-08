@@ -1,12 +1,15 @@
 import { Router } from "express";
-import { getPodLogs, listPods } from "../controllers/pod.controller";
+import { deletePod, getPodDetails, getPodLogs, listPods } from "../controllers/pod.controller";
 import { injectServices } from "../middlewares/k8s.middleware";
+import { asyncHandler } from "../utils/asyncHandler";
 
 const router = Router();
 
 router
-    .get('/', injectServices, listPods)
-    .get('/:name/logs', injectServices, getPodLogs)
+    .get('/', injectServices, asyncHandler(listPods))
+    .get('/:name', injectServices, asyncHandler(getPodDetails))
+    .get('/:name/logs', injectServices, asyncHandler(getPodLogs))
+    .delete('/:name', injectServices, deletePod)
 
 
 export default router;
