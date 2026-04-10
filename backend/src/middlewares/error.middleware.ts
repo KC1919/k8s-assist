@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import ErrorWithStatus from '../types/error.types';
 import logger from '../utils/logger';
-import path from 'node:path';
 
 export function errorHandler(
   err: ErrorWithStatus,
