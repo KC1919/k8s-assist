@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { PodService } from "../services/pod.service";
 import { NamespaceService } from "../services/namespace.service";
+import { DeploymentService } from "../services/deployment.service";
 
 export function injectServices(req: Request, res: Response, next: NextFunction) {
   const context = req.query.context as string | undefined;
@@ -8,7 +9,8 @@ export function injectServices(req: Request, res: Response, next: NextFunction) 
   // attach to request
   (req as any).services = {
     podService: new PodService(),
-    namespaceService: new NamespaceService()
+    namespaceService: new NamespaceService(),
+    deploymentService: new DeploymentService(),
   };
 
   next();

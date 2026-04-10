@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from 'dotenv';
 import podRouter from './routes/pod.routes';
 import namespaceRouter from './routes/namespace.routes';
+import deploymentRouter from './routes/deployment.routes';
 import { errorHandler, notFoundHandler } from './middlewares/error.middleware';
 import { setupLogSocket } from './websocket/logs.socket';
 import { requestLogger } from './middlewares/logger.middleware';
@@ -34,6 +35,7 @@ app.use(requestLogger);
 
 app.use('/api/pods', podRouter);
 app.use('/api/namespaces', namespaceRouter);
+app.use('/api/deployments', deploymentRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
