@@ -1,7 +1,5 @@
-import { log } from "node:console";
 import { K8sService } from "./k8s.service";
 import { NamespaceService } from "./namespace.service";
-import logger from "../utils/logger";
 import { AppError } from "../utils/AppError";
 
 export class DeploymentService extends K8sService {
@@ -74,6 +72,35 @@ export class DeploymentService extends K8sService {
         const res = await this.appsApi.deleteNamespacedDeployment({
             name: deploymentName,
             namespace
+        });
+
+        return res;
+    }
+
+    async scaleDeployment(deploymentName: string, namespace: string, replicas: number) {
+        
+        const namespaceExists = await this.namespaceService.checkNamespaceExists(namespace);
+        if (!namespaceExists) {
+            throw new AppError(`Namespace ${namespace} does not exist`, 404);
+        }
+        
+        const deploymentExists = await this.checkDeploymentExists(deploymentName, namespace);
+        if (!deploymentExists) {
+            throw new AppError(`Deployment ${deploymentName} does not exist in namespace ${namespace}`, 404);
+        }
+
+        const patch = [
+            {
+                op: 'replace',
+                path: '/spec/replicas',
+                value: replicas
+            }
+        ];  
+
+        const res = await this.appsApi.patchNamespacedDeployment({
+            name: deploymentName,
+            namespace,
+            body: patch
         });
 
         return res;
