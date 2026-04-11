@@ -1,12 +1,13 @@
 import  { Request, Response } from 'express';
 import { ApiResponse } from '../utils/apiResponse';
+import { Deployment } from '../types/k8s.types';
 
 export const listDeployments = async (req: Request, res: Response) => {
     const { deploymentService } = (req as any).services;
     const { namespace } = req.query;
     const deployments = await deploymentService.listDeployments(namespace);
 
-    const formattedDeployments = deployments.map((d: any) => ({
+    const formattedDeployments: Deployment[] = deployments.map((d: any) => ({
         name: d.metadata?.name,
         namespace: d.metadata.namespace,
         replicas: d.spec.replicas,
@@ -16,4 +17,32 @@ export const listDeployments = async (req: Request, res: Response) => {
     }));
 
     res.json(new ApiResponse(formattedDeployments, 'Deployments fetched successfully'));
-} 
+}
+
+export const getDeploymentDetails = async (req: Request, res: Response) => {
+    const { deploymentService } = (req as any).services;
+    const { name } = req.params;
+    const { namespace } = req.query;
+
+    if (!namespace) {
+        return res.status(400).json(new ApiResponse(null, 'Namespace query parameter is required'));
+    }
+    
+    const deploymentDetails = await deploymentService.getDeploymentDetails(name, namespace);
+
+    res.json(new ApiResponse(deploymentDetails, 'Deployment details fetched successfully'));
+}   
+
+export const deleteDeployment = async (req: Request, res: Response) => {
+    const { deploymentService } = (req as any).services;
+    const { name } = req.params;
+    const { namespace } = req.query;
+
+    if (!namespace) {
+        return res.status(400).json(new ApiResponse(null, 'Namespace query parameter is required'));
+    }
+
+    await deploymentService.deleteDeployment(name, namespace);
+    res.json(new ApiResponse(null, 'Deployment deleted successfully'));
+}
+
