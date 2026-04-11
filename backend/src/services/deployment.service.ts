@@ -1,7 +1,6 @@
 import { K8sService } from "./k8s.service";
 import { NamespaceService } from "./namespace.service";
 import { AppError } from "../utils/AppError";
-import logger from "../utils/logger";
 
 export class DeploymentService extends K8sService {
 

@@ -28,3 +28,13 @@ export interface Deployment {
     updatedReplicas?: number;
 }
 
+export interface Event {
+    name: string;
+    namespace: string;
+    reason: string;
+    message: string;
+    type: string;
+    count: number;
+    firstTimestamp: string;
+    lastTimestamp: string;
+}

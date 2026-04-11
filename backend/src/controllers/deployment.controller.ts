@@ -16,7 +16,7 @@ export const listDeployments = async (req: Request, res: Response) => {
         updatedReplicas: d.status?.updatedReplicas,
     }));
 
-    res.json(new ApiResponse(formattedDeployments, 'Deployments fetched successfully'));
+    res.status(200).json(new ApiResponse(formattedDeployments, 'Deployments fetched successfully'));
 }
 
 export const getDeploymentDetails = async (req: Request, res: Response) => {
@@ -30,7 +30,7 @@ export const getDeploymentDetails = async (req: Request, res: Response) => {
 
     const deploymentDetails = await deploymentService.getDeploymentDetails(name, namespace);
 
-    res.json(new ApiResponse(deploymentDetails, 'Deployment details fetched successfully'));
+    res.status(200).json(new ApiResponse(deploymentDetails, 'Deployment details fetched successfully'));
 }
 
 export const deleteDeployment = async (req: Request, res: Response) => {
@@ -43,7 +43,7 @@ export const deleteDeployment = async (req: Request, res: Response) => {
     }
 
     await deploymentService.deleteDeployment(name, namespace);
-    res.json(new ApiResponse(null, 'Deployment deleted successfully'));
+    res.status(204).json(new ApiResponse(null, 'Deployment deleted successfully'));
 }
 
 export const scaleDeployment = async (req: Request, res: Response) => {
@@ -68,7 +68,7 @@ export const scaleDeployment = async (req: Request, res: Response) => {
         replicas: result.spec?.replicas
     }
 
-    res.json(new ApiResponse(respObj, 'Deployment scaled successfully'));
+    res.status(203).json(new ApiResponse(respObj, 'Deployment scaled successfully'));
 }
 
 export const restartDeployment = async (req: Request, res: Response) => {
@@ -82,6 +82,5 @@ export const restartDeployment = async (req: Request, res: Response) => {
 
     await deploymentService.restartDeployment(name, namespace);
 
-    res.json(new ApiResponse(null, 'Deployment restarted successfully'));
+    res.status(203).json(new ApiResponse(null, 'Deployment restarted successfully'));
 }
-
