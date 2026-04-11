@@ -117,11 +117,15 @@ export class RuleEngine {
             if(rule){
                 const insight = rule.handler(event);
                 if(insight){
+                    const pod = event.name || event.involvedObject?.name;
+                    const namespace = event.namespace || event.metadata?.namespace;
+                    const timestamp = event.lastTimestamp || event.metadata?.lastTimestamp || event.eventTime || event.reportingComponent;
+
                     insights.push({
                         ...insight,
-                        pod: event.name,
-                        namespace: event.namespace,
-                        timestamp: event.lastTimestamp,
+                        pod,
+                        namespace,
+                        timestamp,
                     } as any);
                 }
             }

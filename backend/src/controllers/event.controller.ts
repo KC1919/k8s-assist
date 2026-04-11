@@ -10,10 +10,11 @@ export const listEvents = async (req: Request, res: Response) => {
     const events = await eventService.listEvents(namespace as string, type as string);
 
     const formattedEvents: Event[] = events.map((event: any) => ({
-        name: event.metadata.name,
+        name: event.involvedObject.name,
         namespace: event.metadata.namespace,
         reason: event.reason,
         message: event.message,
+        kind: event.involvedObject.kind,
         type: event.type,
         count: event.count,
         firstTimestamp: event.firstTimestamp,

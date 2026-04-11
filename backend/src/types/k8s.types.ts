@@ -34,6 +34,7 @@ export interface Event {
     reason: string;
     message: string;
     type: string;
+    kind: string;
     count: number;
     firstTimestamp: string;
     lastTimestamp: string;
@@ -44,6 +45,9 @@ export type Insight = {
     reason: string;
     suggestion: string;
     severity: 'Low' | 'Medium' | 'High';
+    pod?: string;
+    namespace?: string;
+    timestamp?: string;
 }
 
 export type Rule = {
