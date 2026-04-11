@@ -1,0 +1,24 @@
+import { EventService } from "./event.service";
+import { Insight } from "../types/k8s.types";
+import { RuleEngine } from "../rules/rule.engine";
+import { AppError } from "../utils/AppError";
+
+export class InsightService {
+
+    constructor(){}
+
+    eventService = new EventService();
+    ruleEngine = new RuleEngine();
+
+    async generateInsights(namespace?:string): Promise<Insight[]> {
+
+        const events = await this.eventService.listEvents(namespace);
+        const analysis = this.ruleEngine.anaylyzeEvent(events);
+
+        if(!analysis){
+            throw new AppError(`Failed to generate insights for ${namespace}`, 500);
+        }
+
+        return analysis;
+    }
+}

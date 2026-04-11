@@ -3,6 +3,8 @@ import { PodService } from "../services/pod.service";
 import { NamespaceService } from "../services/namespace.service";
 import { DeploymentService } from "../services/deployment.service";
 import { EventService } from "../services/event.service";
+import { InsightService } from "../services/insight.service";
+import { RuleEngine } from "../rules/rule.engine";
 
 export function injectServices(req: Request, res: Response, next: NextFunction) {
   const context = req.query.context as string | undefined;
@@ -13,6 +15,7 @@ export function injectServices(req: Request, res: Response, next: NextFunction) 
     namespaceService: new NamespaceService(),
     deploymentService: new DeploymentService(),
     eventService: new EventService(),
+    insightService: new InsightService()
   };
 
   next();

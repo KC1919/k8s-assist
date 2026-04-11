@@ -38,3 +38,17 @@ export interface Event {
     firstTimestamp: string;
     lastTimestamp: string;
 }
+
+export type Insight = {
+    issue: string;
+    reason: string;
+    suggestion: string;
+    severity: 'Low' | 'Medium' | 'High';
+}
+
+export type Rule = {
+    reason: string;
+    message: string;
+    type: string;
+    handler: (event: any) => Insight | null;
+}
