@@ -71,3 +71,17 @@ export const scaleDeployment = async (req: Request, res: Response) => {
     res.json(new ApiResponse(respObj, 'Deployment scaled successfully'));
 }
 
+export const restartDeployment = async (req: Request, res: Response) => {
+    const { deploymentService } = (req as any).services;
+    const name = req.params.name as string;
+    const namespace = req.query.namespace as string;
+
+    if (!namespace) {
+        return res.status(400).json(new ApiResponse(null, 'Namespace query parameter is required'));
+    }
+
+    await deploymentService.restartDeployment(name, namespace);
+
+    res.json(new ApiResponse(null, 'Deployment restarted successfully'));
+}
+

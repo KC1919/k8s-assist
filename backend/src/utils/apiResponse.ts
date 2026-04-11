@@ -7,7 +7,7 @@ export class ApiResponse<T> {
     message: string = "Success"
   ) {
     this.success = true;
-    this.data = data;
     this.message = message; 
+    this.data = data;
   }
 }

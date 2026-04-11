@@ -1,6 +1,7 @@
 import { K8sService } from "./k8s.service";
 import { NamespaceService } from "./namespace.service";
 import { AppError } from "../utils/AppError";
+import logger from "../utils/logger";
 
 export class DeploymentService extends K8sService {
 
@@ -104,5 +105,40 @@ export class DeploymentService extends K8sService {
         });
 
         return res;
+    }
+
+    async restartDeployment(deploymentName: string, namespace: string) {
+        
+        const namespaceExists = await this.namespaceService.checkNamespaceExists(namespace);
+        if (!namespaceExists) {
+            throw new AppError(`Namespace ${namespace} does not exist`, 404);
+        }
+        
+        const deploymentExists = await this.checkDeploymentExists(deploymentName, namespace);
+        if (!deploymentExists) {
+            throw new AppError(`Deployment ${deploymentName} does not exist in namespace ${namespace}`, 404);
+        }
+
+        const deployment = await this.getDeploymentDetails(deploymentName, namespace);
+
+        if (deployment.spec?.template?.metadata) {
+            deployment.spec.template.metadata.annotations = { ...(deployment.spec.template.metadata.annotations || {}), 'kubectl.kubernetes.io/restartedAt': new Date().toISOString() };
+        }
+
+        const patch = [
+            {
+                op: 'add',
+                path: '/spec/template/metadata/annotations/kubectl.kubernetes.io~1restartedAt',
+                value: new Date().toISOString()
+            }
+        ];
+
+        const res = await this.appsApi.replaceNamespacedDeployment({
+            name: deploymentName,
+            namespace,
+            body: deployment,
+        });
+
+        return res; 
     }
 }
