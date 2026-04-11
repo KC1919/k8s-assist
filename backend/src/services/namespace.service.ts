@@ -14,15 +14,15 @@ export class NamespaceService extends K8sService {
         const namespaces = await this.getNamespaces();
         const namespaceExists = namespaces.filter(ns => ns.metadata?.name === namespace).length > 0;
         
-        if (!namespaceExists) {
-            throw new Error(`Namespace ${namespace} does not exist`);
-        }
+        return !namespaceExists ? false : true;
     }
 
     async createNamespace(namespace?:string) {
         if (!namespace) {
             throw new Error("Namespace name is required");
         }
+
+        await this.checkNamespaceExists(namespace);
 
         const data = {
             metadata: {

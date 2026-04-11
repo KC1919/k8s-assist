@@ -19,3 +19,12 @@ export interface Pod {
     }];
 }
 
+export interface Deployment {
+    name: string;
+    namespace: string;
+    replicas: number;
+    availableReplicas?: number;
+    readyReplicas?: number;
+    updatedReplicas?: number;
+}
+
