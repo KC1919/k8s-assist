@@ -1,3 +1,6 @@
+/**
+ * Custom application error that carries an HTTP status code and optional details.
+ */
 export class AppError extends Error {
     
   statusCode: number;

@@ -5,6 +5,9 @@ import { asyncHandler } from "../utils/asyncHandler";
 
 const router = Router();
 
+/**
+ * Namespace routes handle namespace listing and creation.
+ */
 router
     .get('/', injectServices, asyncHandler(listNamespaces))
     .post('/create', injectServices, asyncHandler(createNamespace))

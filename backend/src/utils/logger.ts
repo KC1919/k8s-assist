@@ -1,5 +1,8 @@
 import pino from "pino";
 
+/**
+ * Application logger configured with pretty-printing and timestamp formatting.
+ */
 const logger = pino({
     level: process.env.LOG_LEVEL || "info",
     transport: {

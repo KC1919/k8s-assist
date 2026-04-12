@@ -3,6 +3,9 @@ import { ApiResponse } from "../utils/apiResponse";
 import { AppError } from "../utils/AppError";
 import { Event } from "../types/k8s.types";
 
+/**
+ * Event controller handles fetching Kubernetes events and formatting response payloads.
+ */
 export const listEvents = async (req: Request, res: Response) => {
     const { eventService } = (req as any).services;
     const { namespace, type } = req.query;

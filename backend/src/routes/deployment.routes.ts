@@ -5,6 +5,9 @@ import { deleteDeployment, getDeploymentDetails, listDeployments, restartDeploym
 
 const router = Router();
 
+/**
+ * Deployment routes expose deployment operations like list, scale, restart, and delete.
+ */
 router  
     .get('/', injectServices, asyncHandler(listDeployments))
     .get('/:name', injectServices, asyncHandler(getDeploymentDetails))

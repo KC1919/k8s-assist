@@ -2,6 +2,12 @@ import { Request, Response } from 'express';
 import { ApiResponse } from '../utils/apiResponse';
 import { Deployment } from '../types/k8s.types';
 
+/**
+ * Deployment controllers handle deployment listing, scaling, restart, and deletion.
+ */
+/**
+ * Return all deployments for the provided namespace, or all namespaces if none is supplied.
+ */
 export const listDeployments = async (req: Request, res: Response) => {
     const { deploymentService } = (req as any).services;
     const { namespace } = req.query;
@@ -19,6 +25,9 @@ export const listDeployments = async (req: Request, res: Response) => {
     res.status(200).json(new ApiResponse(formattedDeployments, 'Deployments fetched successfully'));
 }
 
+/**
+ * Return detailed information for a specific deployment within the requested namespace.
+ */
 export const getDeploymentDetails = async (req: Request, res: Response) => {
     const { deploymentService } = (req as any).services;
     const { name } = req.params;
@@ -33,6 +42,9 @@ export const getDeploymentDetails = async (req: Request, res: Response) => {
     res.status(200).json(new ApiResponse(deploymentDetails, 'Deployment details fetched successfully'));
 }
 
+/**
+ * Delete the specified deployment from a namespace and return a 204 response.
+ */
 export const deleteDeployment = async (req: Request, res: Response) => {
     const { deploymentService } = (req as any).services;
     const { name } = req.params;
@@ -46,6 +58,9 @@ export const deleteDeployment = async (req: Request, res: Response) => {
     res.status(204).json(new ApiResponse(null, 'Deployment deleted successfully'));
 }
 
+/**
+ * Scale a deployment horizontally by updating its replica count.
+ */
 export const scaleDeployment = async (req: Request, res: Response) => {
     const { deploymentService } = (req as any).services;
     const name = req.params.name as string;
@@ -71,6 +86,9 @@ export const scaleDeployment = async (req: Request, res: Response) => {
     res.status(203).json(new ApiResponse(respObj, 'Deployment scaled successfully'));
 }
 
+/**
+ * Restart a deployment by updating its pod template annotation to trigger a rolling update.
+ */
 export const restartDeployment = async (req: Request, res: Response) => {
     const { deploymentService } = (req as any).services;
     const name = req.params.name as string;

@@ -2,6 +2,9 @@ import { K8sService } from "./k8s.service";
 import { NamespaceService } from "./namespace.service";
 import { AppError } from "../utils/AppError";
 
+/**
+ * DeploymentService wraps Kubernetes Deployment API calls and validation logic.
+ */
 export class DeploymentService extends K8sService {
 
     namespaceService = new NamespaceService();
@@ -10,6 +13,9 @@ export class DeploymentService extends K8sService {
         super();
     }
 
+    /**
+     * List deployments for a single namespace or across all namespaces.
+     */
     async listDeployments(namespace?: string) {
 
         if (namespace) {
@@ -25,6 +31,9 @@ export class DeploymentService extends K8sService {
         return res.items;
     }
 
+    /**
+     * Validate that a deployment exists in the requested namespace.
+     */
     async checkDeploymentExists(deploymentName: string, namespace: string) {
 
         const namespaceExists = await this.namespaceService.checkNamespaceExists(namespace);
@@ -38,6 +47,9 @@ export class DeploymentService extends K8sService {
         return !deploymentExists ? false : true;
     }
     
+    /**
+     * Read detailed deployment information from Kubernetes.
+     */
     async getDeploymentDetails(deploymentName: string, namespace: string) {
 
         const namespaceExists = await this.namespaceService.checkNamespaceExists(namespace);
@@ -57,6 +69,9 @@ export class DeploymentService extends K8sService {
         return res;
     }
 
+    /**
+     * Delete a deployment from the cluster.
+     */
     async deleteDeployment(deploymentName: string, namespace: string) {
         
         const namespaceExists = await this.namespaceService.checkNamespaceExists(namespace);
@@ -77,6 +92,9 @@ export class DeploymentService extends K8sService {
         return res;
     }
 
+    /**
+     * Patch a deployment to scale the replica count.
+     */
     async scaleDeployment(deploymentName: string, namespace: string, replicas: number) {
         
         const namespaceExists = await this.namespaceService.checkNamespaceExists(namespace);
@@ -106,6 +124,9 @@ export class DeploymentService extends K8sService {
         return res;
     }
 
+    /**
+     * Restart a deployment by updating the pod template annotation.
+     */
     async restartDeployment(deploymentName: string, namespace: string) {
         
         const namespaceExists = await this.namespaceService.checkNamespaceExists(namespace);

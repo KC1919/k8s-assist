@@ -2,6 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import ErrorWithStatus from '../types/error.types';
 import logger from '../utils/logger';
 
+/**
+ * Global error handling middleware for Express.
+ * Converts thrown errors into JSON responses and logs details.
+ */
 export function errorHandler(
   err: ErrorWithStatus,
   req: Request,
@@ -29,6 +33,9 @@ export function errorHandler(
   res.status(status).json(responseBody);
 }
 
+/**
+ * Catch-all handler for requests that do not match any route.
+ */
 export function notFoundHandler(req: Request, res: Response, next: NextFunction) {
   const error = new Error(`Cannot ${req.method} ${req.originalUrl}`) as ErrorWithStatus;
   error.statusCode = 404;

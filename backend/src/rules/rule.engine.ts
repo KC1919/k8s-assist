@@ -4,6 +4,12 @@ export class RuleEngine {
 
     private rules: Rule[] = [];
 
+    private severityScore: Record<Insight['severity'], number> = {
+        'Low': 1,
+        'Medium': 2,
+        'High': 3
+    };
+
     constructor() {
         this.rules = [
             {
@@ -27,8 +33,8 @@ export class RuleEngine {
                     suggestion: "Verify that the image name is correct and that the registry credentials are properly configured. Also, check if the image exists in the registry.",
                     severity: "Medium"
                 })
-             },
-             {
+            },
+            {
                 reason: "FailedScheduling",
                 message: "Pod is in FailedScheduling state, which means it cannot be scheduled on any node. Check the cluster resources and node conditions.",
                 type: "Warning",
@@ -38,8 +44,8 @@ export class RuleEngine {
                     suggestion: "Check the cluster resources and node conditions to ensure there are enough resources available for the pod. Also, check for any taints or tolerations that may be affecting scheduling.",
                     severity: "Medium"
                 })
-             },
-             {
+            },
+            {
                 reason: "OOMKilled",
                 message: "Pod was killed due to Out of Memory (OOM) error. Check the pod resource limits and usage.",
                 type: "Warning",
@@ -49,8 +55,8 @@ export class RuleEngine {
                     suggestion: "Review the pod's resource limits and usage to ensure that it has enough memory allocated. Consider increasing the memory limits or optimizing the application to reduce memory usage.",
                     severity: "High"
                 })
-             },
-             {
+            },
+            {
                 reason: "NodeNotReady",
                 message: "Pod is scheduled on a node that is not ready. Check the node status and conditions.",
                 type: "Warning",
@@ -60,8 +66,8 @@ export class RuleEngine {
                     suggestion: "Check the status and conditions of the node where the pod is scheduled. Ensure that the node is healthy and has network connectivity.",
                     severity: "Medium"
                 })
-             },
-             {
+            },
+            {
                 reason: "BackOff",
                 message: "Pod is in BackOff state, which means it is being restarted repeatedly. Check the pod logs for more details.",
                 type: "Warning",
@@ -71,8 +77,8 @@ export class RuleEngine {
                     suggestion: "Check the pod logs to identify the root cause of the restarts. Common issues include application errors, insufficient resources, or misconfigurations.",
                     severity: "High"
                 })
-             },
-             {
+            },
+            {
                 reason: "ErrImagePull",
                 message: "Pod is in ErrImagePull state, which means it encountered an error while trying to pull the container image. Check the image name and registry credentials.",
                 type: "Warning",
@@ -82,8 +88,8 @@ export class RuleEngine {
                     suggestion: "Verify that the image name is correct and that the registry credentials are properly configured. Also, check if the image exists in the registry.",
                     severity: "Medium"
                 })
-             },
-             {
+            },
+            {
                 reason: "Evicted",
                 message: "Pod was evicted from its node due to resource constraints. Check the cluster resources and node conditions.",
                 type: "Warning",
@@ -93,8 +99,8 @@ export class RuleEngine {
                     suggestion: "Check the cluster resources and node conditions to ensure there are enough resources available for the pod. Consider optimizing resource usage or scaling the cluster if necessary.",
                     severity: "Medium"
                 })
-             },
-             {
+            },
+            {
                 reason: "Unhealthy",
                 message: "Pod is marked as Unhealthy, which means it is not responding to health checks. Check the pod's health check configuration and logs.",
                 type: "Warning",
@@ -104,7 +110,7 @@ export class RuleEngine {
                     suggestion: "Review the pod's health check configuration and logs to identify any issues. Ensure that the application is healthy and responsive.",
                     severity: "High"
                 })
-             }
+            }
         ];
     }
 
@@ -112,24 +118,45 @@ export class RuleEngine {
 
         const insights: Insight[] = [];
 
-        for(const event of events){
-            const rule = this.rules.find(r => r.reason === event.reason);
-            if(rule){
-                const insight = rule.handler(event);
-                if(insight){
-                    const pod = event.name || event.involvedObject?.name;
-                    const namespace = event.namespace || event.metadata?.namespace;
-                    const timestamp = event.lastTimestamp || event.metadata?.lastTimestamp || event.eventTime || event.reportingComponent;
+        const groupedInsights: Record<string, any> = {};
 
-                    insights.push({
-                        ...insight,
+        for (const event of events) {
+            const rule = this.rules.find(r => r.reason === event.reason);
+
+            if (!rule) {
+                continue;
+            }
+
+            const baseInsight = rule.handler(event);
+
+            if (baseInsight) {
+                const pod = event.name || event.involvedObject?.name;
+                const namespace = event.namespace || event.metadata?.namespace;
+                const timestamp = event.lastTimestamp || event.metadata?.lastTimestamp || event.eventTime || event.reportingComponent;
+
+                const podKey = `${namespace}/${pod}`;
+
+                if(!groupedInsights[podKey]){
+                    groupedInsights[podKey] = {
                         pod,
                         namespace,
-                        timestamp,
-                    } as any);
+                        issues: [],
+                        timestamp
+                    }
                 }
+                
+                const existingInsight = insights.find(i => i.pod === pod && i.namespace === namespace);
+
+                if(!existingInsight){
+                    groupedInsights[podKey].issues.push(baseInsight);
+                }
+
             }
         }
-        return insights;
+
+        return Object.values(groupedInsights).map(group => {
+            group.issues.sort((a: Insight, b: Insight) => this.severityScore[b.severity] - this.severityScore[a.severity]);
+            return group;
+        });
     }
 }

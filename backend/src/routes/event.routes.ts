@@ -5,7 +5,9 @@ import { asyncHandler } from "../utils/asyncHandler";
 
 const router = Router();
 
-
+/**
+ * Event routes expose Kubernetes event listing functionality.
+ */
 router
     .get('/', injectServices, asyncHandler(listEvents));
 

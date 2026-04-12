@@ -3,6 +3,12 @@ import { Pod } from "../types/k8s.types";
 import { AppError } from "../utils/AppError";
 import { ApiResponse } from "../utils/apiResponse";
 
+/**
+ * Pod controller handles CRUD operations and log retrieval for Kubernetes Pods.
+ */
+/**
+ * Retrieve pods for the requested namespace and return a formatted pod list.
+ */
 export const listPods = async (
     req: Request,
     res: Response,
@@ -30,6 +36,9 @@ export const listPods = async (
     res.status(200).json(new ApiResponse(formattedPods, "Pods fetched successfully"));
 };
 
+/**
+ * Fetch logs for a specific pod and optional container within a namespace.
+ */
 export const getPodLogs = async (
     req: Request,
     res: Response,
@@ -56,6 +65,9 @@ export const getPodLogs = async (
     res.status(200).json(new ApiResponse(podLogs, "Pod logs fetched successfully"));
 };
 
+/**
+ * Return detailed metadata and status for a single pod.
+ */
 export const getPodDetails = async (
     req: Request,
     res: Response,
@@ -90,6 +102,9 @@ export const getPodDetails = async (
     res.status(200).json(new ApiResponse(formattedPod, "Pod details fetched successfully"));
 };
 
+/**
+ * Delete a pod by name from the specified namespace.
+ */
 export const deletePod = async (
     req: Request,
     res: Response,

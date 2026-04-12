@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import { ApiResponse } from "../utils/apiResponse";
 import { AppError } from "../utils/AppError";
 
+/**
+ * Insight controller generates and returns enriched insights based on event analysis.
+ */
 export const getInsights = async (req: Request, res: Response) => {
     const { insightService } = (req as any).services;
     const namespace = req.query.namespace as string;

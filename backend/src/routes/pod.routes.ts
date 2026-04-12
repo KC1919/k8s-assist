@@ -5,6 +5,9 @@ import { asyncHandler } from "../utils/asyncHandler";
 
 const router = Router();
 
+/**
+ * Pod routes expose pod listing, detail, logs, and deletion endpoints.
+ */
 router
     .get('/', injectServices, asyncHandler(listPods))
     .get('/:name', injectServices, asyncHandler(getPodDetails))

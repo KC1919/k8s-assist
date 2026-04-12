@@ -1,5 +1,8 @@
 import * as k8s from '@kubernetes/client-node';
 
+/**
+ * Base K8sService configures Kubernetes API clients for reuse by subclasses.
+ */
 export class K8sService {
   protected coreApi;
   protected appsApi;
