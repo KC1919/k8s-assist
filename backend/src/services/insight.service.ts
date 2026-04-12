@@ -19,7 +19,7 @@ export class InsightService {
     async generateInsights(namespace?:string): Promise<Insight[]> {
 
         const events = await this.eventService.listEvents(namespace);
-        const analysis = this.ruleEngine.anaylyzeEvent(events);
+        const analysis = this.ruleEngine.analyzeEvent(events);
 
         if(!analysis){
             throw new AppError(`Failed to generate insights for ${namespace}`, 500);

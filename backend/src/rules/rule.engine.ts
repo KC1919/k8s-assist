@@ -114,7 +114,7 @@ export class RuleEngine {
         ];
     }
 
-    anaylyzeEvent(events: any): Insight[] {
+    analyzeEvent(events: any): Insight[] {
 
         const groupedInsights: Record<string, any> = {};
 
@@ -164,7 +164,31 @@ export class RuleEngine {
         // sort the insights for each pod by severity and then return the list of insights grouped by pod and namespace
         return Object.values(groupedInsights).map(group => {
             group.issues.sort((a: Insight, b: Insight) => this.severityScore[b.severity] - this.severityScore[a.severity]);
-            return group;
+            return {
+                ...group,
+                summary: this.buildSummary(group.issues),
+                confidence: this.calculateConfidence(group.issues)
+            };
         });
     }
+
+    buildSummary(issues: any) {
+        const totalIssues = issues.length;
+        const highSeverity = issues.filter((i: any) => i.severity === 'High').length;
+        const mediumSeverity = issues.filter((i: any) => i.severity === 'Medium').length;
+        const lowSeverity = issues.filter((i: any) => i.severity === 'Low').length;
+
+        return `Total Issues Detected: ${totalIssues}, (High: ${highSeverity}, Medium: ${mediumSeverity}, Low: ${lowSeverity})`;
+    } 
+
+    calculateConfidence(issues: any) {
+        let score = 0;
+        issues.forEach((issue: any) => {
+            if(issue.severity === 'High') score += 0.5;
+            else if(issue.severity === 'Medium') score += 0.3;
+            else if(issue.severity === 'Low') score += 0.1;
+        });
+        return Math.min(1, score); // max confidence score is 1
+    }
+
 }
