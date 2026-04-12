@@ -20,7 +20,21 @@ export class RuleEngine {
                     issue: "Pod is crashing repeatedly",
                     reason: event.reason,
                     suggestion: "Check the pod logs to identify the root cause of the crashes. Common issues include application errors, insufficient resources, or misconfigurations.",
-                    severity: "High"
+                    severity: "High",
+                    actions: [
+                        {
+                            label: "View Logs",
+                            actionType: "VIEW_LOGS",
+                            api: `/api/pods/${event?.involvedObject?.name}/logs?namespace=${event.metadata.namespace}`,
+                            method: "GET"
+                        },
+                        {
+                            label: "Restart Deployment",
+                            actionType: "RESTART_DEPLOYMENT",
+                            api: `/api/deployments/${event?.involvedObject?.name}/restart?namespace=${event.metadata.namespace}`,
+                            method: "POST"
+                        }
+                    ]
                 })
             },
             {
@@ -31,7 +45,21 @@ export class RuleEngine {
                     issue: "Pod cannot pull container image",
                     reason: event.reason,
                     suggestion: "Verify that the image name is correct and that the registry credentials are properly configured. Also, check if the image exists in the registry.",
-                    severity: "Medium"
+                    severity: "Medium",
+                    actions: [
+                        {
+                            label: "View Logs",
+                            actionType: "VIEW_LOGS",
+                            api: `/api/pods/${event.name}/logs?namespace=${event.namespace}`,
+                            method: "GET"
+                        },
+                        {
+                            label: "Check Pod Details",
+                            actionType: "CHECK_POD_DETAILS",
+                            api: `/api/pods/${event.name}?namespace=${event.namespace}`,
+                            method: "GET"
+                        }
+                    ]
                 })
             },
             {
@@ -75,7 +103,21 @@ export class RuleEngine {
                     issue: "Pod is being restarted repeatedly",
                     reason: event.reason,
                     suggestion: "Check the pod logs to identify the root cause of the restarts. Common issues include application errors, insufficient resources, or misconfigurations.",
-                    severity: "High"
+                    severity: "High",
+                    actions: [
+                        {
+                            label: "View Logs",
+                            actionType: "VIEW_LOGS",
+                            api: `http://localhost:5050/api/pods/${event?.involvedObject?.name}/logs?namespace=${event.metadata.namespace}`,
+                            method: "GET"
+                        },
+                        {
+                            label: "Check Pod Details",
+                            actionType: "CHECK_POD_DETAILS",
+                            api: `http://localhost:5050/api/pods/${event?.involvedObject?.name}?namespace=${event.metadata.namespace}`,
+                            method: "GET"
+                        }
+                    ]
                 })
             },
             {
@@ -190,5 +232,4 @@ export class RuleEngine {
         });
         return Math.min(1, score); // max confidence score is 1
     }
-
 }
