@@ -7,16 +7,17 @@ import namespaceRouter from './routes/namespace.routes';
 import deploymentRouter from './routes/deployment.routes';
 import eventRouter from './routes/event.routes';
 import insightRouter from './routes/insight.routes';
+import actionRouter from './routes/action.routes';
 import { errorHandler, notFoundHandler } from './middlewares/error.middleware';
 import { setupLogSocket } from './websocket/logs.socket';
 import { requestLogger } from './middlewares/logger.middleware';
+import path from 'path';
 
-dotenv.config();
+dotenv.config({path: path.resolve(process.cwd(), 'src/config/envs/env.default')});
 
 const app: Express = express();
 const server = http.createServer(app);
 const port = process.env.PORT || 5050;
-
 setupLogSocket(server);
 
 app.use(cors());
@@ -40,6 +41,7 @@ app.use('/api/namespaces', namespaceRouter);
 app.use('/api/deployments', deploymentRouter);
 app.use('/api/events', eventRouter);
 app.use('/api/insights', insightRouter);
+app.use('/api/actions', actionRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

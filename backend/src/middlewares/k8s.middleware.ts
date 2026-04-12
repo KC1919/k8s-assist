@@ -5,6 +5,7 @@ import { DeploymentService } from "../services/deployment.service";
 import { EventService } from "../services/event.service";
 import { InsightService } from "../services/insight.service";
 import { RuleEngine } from "../rules/rule.engine";
+import { ActionExecutor } from "../actions/action.executor";
 
 /**
  * Middleware that injects shared service instances into the request object.
@@ -18,7 +19,8 @@ export function injectServices(req: Request, res: Response, next: NextFunction) 
     namespaceService: new NamespaceService(),
     deploymentService: new DeploymentService(),
     eventService: new EventService(),
-    insightService: new InsightService()
+    insightService: new InsightService(),
+    actionService: new ActionExecutor(),
   };
 
   next();

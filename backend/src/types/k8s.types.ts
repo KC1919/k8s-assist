@@ -40,6 +40,13 @@ export interface Event {
     lastTimestamp: string;
 }
 
+export interface Action {
+    label: string;
+    actionType: string;
+    api: string;
+    method: string;
+}
+
 export type Insight = {
     issue: string;
     reason: string;
@@ -48,6 +55,7 @@ export type Insight = {
     pod?: string;
     namespace?: string;
     timestamp?: string;
+    actions?: Action[];
 }
 
 export type Rule = {
