@@ -116,26 +116,31 @@ export class RuleEngine {
 
     anaylyzeEvent(events: any): Insight[] {
 
-        const insights: Insight[] = [];
-
         const groupedInsights: Record<string, any> = {};
 
+        // iterate over all the events of a namespace and apply the rules to generate insights
         for (const event of events) {
+            // find the rule that matches the event reason
             const rule = this.rules.find(r => r.reason === event.reason);
 
+            // if no rule matches, skip the event
             if (!rule) {
                 continue;
             }
 
+            // apply the rule handler to the event to generate an insight
             const baseInsight = rule.handler(event);
 
+            // group insights by pod and namespace, and aggregate issues for the same pod
             if (baseInsight) {
-                const pod = event.name || event.involvedObject?.name;
+                const pod = event.involvedObject?.name || event.name;
                 const namespace = event.namespace || event.metadata?.namespace;
                 const timestamp = event.lastTimestamp || event.metadata?.lastTimestamp || event.eventTime || event.reportingComponent;
 
+                // use a combination of namespace and pod name as the key for grouping insights
                 const podKey = `${namespace}/${pod}`;
 
+                // if this is the first insight for the pod, initialize the group for the pod and namespace using podKey
                 if(!groupedInsights[podKey]){
                     groupedInsights[podKey] = {
                         pod,
@@ -145,15 +150,18 @@ export class RuleEngine {
                     }
                 }
                 
-                const existingInsight = insights.find(i => i.pod === pod && i.namespace === namespace);
+                // check if the same issue already exists for the pod, if yes, increment the count, otherwise add a new issue to the list of issues for the pod
+                const existingIssue = groupedInsights[podKey].issues.some((i:any) => i.reason === baseInsight.reason);
 
-                if(!existingInsight){
-                    groupedInsights[podKey].issues.push(baseInsight);
+                if(!existingIssue){
+                    groupedInsights[podKey].issues.push({...baseInsight, count:1});
                 }
-
+                else{
+                    existingIssue.count++;
+                }
             }
         }
-
+        // sort the insights for each pod by severity and then return the list of insights grouped by pod and namespace
         return Object.values(groupedInsights).map(group => {
             group.issues.sort((a: Insight, b: Insight) => this.severityScore[b.severity] - this.severityScore[a.severity]);
             return group;
