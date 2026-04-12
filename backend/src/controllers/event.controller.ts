@@ -10,7 +10,7 @@ export const listEvents = async (req: Request, res: Response) => {
     const { eventService } = (req as any).services;
     const { namespace, type } = req.query;
 
-    const events = await eventService.listEvents(namespace as string, type as string);
+    const events = await eventService.listEvents(namespace, type);
 
     const formattedEvents: Event[] = events.map((event: any) => ({
         name: event.involvedObject.name,
