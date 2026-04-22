@@ -3,7 +3,8 @@ import * as k8s from "@kubernetes/client-node";
 
 export function setupLogSocket(server: any) {
   const wss = new WebSocketServer({ 
-    server, 
+    server,
+    path: '/logs'
   });
 
   wss.on("connection", (ws, req) => {
