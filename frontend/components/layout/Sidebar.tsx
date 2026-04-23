@@ -19,32 +19,28 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="flex h-full w-64 flex-col bg-gray-900">
+    <div className="flex h-full w-64 flex-col bg-slate-950 border-r border-slate-800">
       <div className="flex h-16 shrink-0 items-center px-4">
         <h1 className="text-xl font-bold text-white">K8s Assist</h1>
       </div>
-      <nav className="flex flex-1 flex-col px-2 py-4">
-        <ul role="list" className="flex flex-1 flex-col gap-y-7">
-          <li>
-            <ul role="list" className="-mx-2 space-y-1">
-              {navigation.map((item) => (
-                <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className={cn(
-                      pathname === item.href
-                        ? 'bg-gray-800 text-white'
-                        : 'text-gray-400 hover:bg-gray-800 hover:text-white',
-                      'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6'
-                    )}
-                  >
-                    <span className="text-lg">{item.icon}</span>
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </li>
+      <nav className="flex flex-1 flex-col px-3 py-4">
+        <ul role="list" className="flex flex-1 flex-col divide-y divide-slate-800">
+          {navigation.map((item) => (
+            <li key={item.name} className="py-1">
+              <Link
+                href={item.href}
+                className={cn(
+                  pathname === item.href
+                    ? 'bg-slate-700 text-white shadow-sm ring-1 ring-slate-600'
+                    : 'bg-slate-900 text-slate-200 hover:bg-slate-800 hover:text-white hover:ring-1 hover:ring-slate-600',
+                  'group flex items-center gap-x-3 rounded-2xl px-4 py-3 text-sm font-semibold leading-6 transition duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 cursor-pointer'
+                )}
+              >
+                <span className="text-base">{item.icon}</span>
+                {item.name}
+              </Link>
+            </li>
+          ))}
         </ul>
       </nav>
     </div>

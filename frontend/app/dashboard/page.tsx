@@ -1,11 +1,13 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useClusterStore } from '../../store/useClusterStore';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/shared/Card';
 import Loader from '../../components/shared/Loader';
 
 export default function Dashboard() {
+  const router = useRouter();
   const {
     namespaces,
     pods,
@@ -20,6 +22,8 @@ export default function Dashboard() {
     loadingInsights,
     refreshAll,
   } = useClusterStore();
+
+  // const fetchPods = useClusterStore().fetchPods(selectedNamespace!)
 
   useEffect(() => {
     refreshAll();
@@ -48,6 +52,15 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{namespaces.length}</div>
+            <div className="mt-4">
+              <button
+                type="button"
+                onClick={() => router.push('/namespaces')}
+                className="rounded-md bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 transition hover:bg-slate-300"
+              >
+                View namespaces
+              </button>
+            </div>
           </CardContent>
         </Card>
 
@@ -60,6 +73,15 @@ export default function Dashboard() {
             <p className="text-xs text-muted-foreground">
               {pods.filter(p => p.status === 'Running').length} running
             </p>
+            <div className="mt-4">
+              <button
+                type="button"
+                onClick={() => router.push('/pods')}
+                className="rounded-md bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 transition hover:bg-slate-300"
+              >
+                View pods
+              </button>
+            </div>
           </CardContent>
         </Card>
 
@@ -69,6 +91,15 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{deployments.length}</div>
+            <div className="mt-4">
+              <button
+                type="button"
+                onClick={() => router.push('/deployments')}
+                className="rounded-md bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 transition hover:bg-slate-300"
+              >
+                View deployments
+              </button>
+            </div>
           </CardContent>
         </Card>
 
@@ -79,6 +110,15 @@ export default function Dashboard() {
           <CardContent>
             <div className="text-2xl font-bold text-red-600">{criticalInsights.length}</div>
             <p className="text-xs text-muted-foreground">Critical issues</p>
+            <div className="mt-4">
+              <button
+                type="button"
+                onClick={() => router.push('/ai-insights')}
+                className="rounded-md bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 transition hover:bg-slate-300"
+              >
+                View insights
+              </button>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -104,6 +144,15 @@ export default function Dashboard() {
                 ))}
               </div>
             )}
+            <div className="mt-4">
+              <button
+                type="button"
+                onClick={() => router.push('/events')}
+                className="rounded-md bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 transition hover:bg-slate-300"
+              >
+                View all events
+              </button>
+            </div>
           </CardContent>
         </Card>
 
@@ -130,6 +179,15 @@ export default function Dashboard() {
                 ))}
               </div>
             )}
+            <div className="mt-4">
+              <button
+                type="button"
+                onClick={() => router.push('/ai-insights')}
+                className="rounded-md bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 transition hover:bg-slate-300"
+              >
+                View all insights
+              </button>
+            </div>
           </CardContent>
         </Card>
       </div>

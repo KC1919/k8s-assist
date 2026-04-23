@@ -14,11 +14,6 @@ export default function DeploymentsPage() {
     }
   }, [fetchDeployments, selectedNamespace]);
 
-  const handleDeploymentUpdated = () => {
-    if (selectedNamespace) {
-      fetchDeployments();
-    }
-  };
 
   if (loadingDeployments) {
     return <Loader />;
@@ -53,7 +48,7 @@ export default function DeploymentsPage() {
 
       <div className="bg-white shadow rounded-lg">
         <div className="px-4 py-5 sm:p-6">
-          <DeploymentsTable deployments={deployments} onDeploymentUpdated={handleDeploymentUpdated} />
+          <DeploymentsTable deployments={deployments} />
         </div>
       </div>
     </div>

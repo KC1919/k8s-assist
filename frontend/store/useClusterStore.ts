@@ -49,7 +49,13 @@ export const useClusterStore = create<ClusterState>((set, get) => ({
   loadingInsights: false,
 
   // Actions
-  setSelectedNamespace: (namespace) => set({ selectedNamespace: namespace }),
+  setSelectedNamespace: (namespace) => {
+    set({ selectedNamespace: namespace })
+    get().fetchPods(namespace || undefined);
+    get().fetchDeployments(namespace || undefined);
+    get().fetchEvents(namespace || undefined);
+    get().fetchInsights(namespace || undefined);
+  },
 
   fetchNamespaces: async () => {
     set({ loadingNamespaces: true });
@@ -67,6 +73,7 @@ export const useClusterStore = create<ClusterState>((set, get) => ({
     set({ loadingPods: true });
     try {
       const pods = await apiClient.getPods(ns || undefined);
+      console.log("FETCHING PODSS FOR:", ns);
       set({ pods, loadingPods: false });
     } catch (error) {
       console.error('Failed to fetch pods:', error);

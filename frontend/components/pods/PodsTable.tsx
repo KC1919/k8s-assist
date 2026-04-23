@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Pod } from '../../types/k8s';
 import { apiClient } from '../../lib/api';
@@ -12,6 +13,7 @@ interface PodsTableProps {
 }
 
 export default function PodsTable({ pods, onPodDeleted }: PodsTableProps) {
+  const router = useRouter();
   const [deletingPod, setDeletingPod] = useState<string | null>(null);
 
   const handleDeletePod = async (pod: Pod) => {
@@ -72,11 +74,19 @@ export default function PodsTable({ pods, onPodDeleted }: PodsTableProps) {
       key: 'actions',
       header: 'Actions',
       render: (pod: Pod) => (
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap gap-2">
           <button
+            type="button"
+            onClick={() => router.push(`/pods/${encodeURIComponent(pod.namespace)}/${encodeURIComponent(pod.name)}`)}
+            className="rounded-md bg-slate-100 px-2 py-1 text-sm font-medium text-slate-900 transition hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 cursor-pointer"
+          >
+            View
+          </button>
+          <button
+            type="button"
             onClick={() => handleDeletePod(pod)}
             disabled={deletingPod === pod.name}
-            className="text-red-600 hover:text-red-900 disabled:opacity-50"
+            className="rounded-md bg-slate-100 px-2 py-1 text-sm font-medium text-rose-700 transition hover:bg-rose-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
           >
             {deletingPod === pod.name ? 'Deleting...' : 'Delete'}
           </button>
