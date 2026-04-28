@@ -4,6 +4,7 @@ interface Column<T> {
   key: string;
   header: string;
   render: (item: T) => ReactNode;
+  hideOnMobile?: boolean;
 }
 
 interface TableProps<T> {
@@ -29,7 +30,7 @@ export default function Table<T>({ data, columns, emptyMessage = 'No data availa
             {columns.map((column) => (
               <th
                 key={column.key}
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className={`px-4 py-3 md:px-6 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${column.hideOnMobile ? 'hidden md:table-cell' : ''}`}
               >
                 {column.header}
               </th>
@@ -40,7 +41,7 @@ export default function Table<T>({ data, columns, emptyMessage = 'No data availa
           {data.map((item, index) => (
             <tr key={index} className="hover:bg-gray-50">
               {columns.map((column) => (
-                <td key={column.key} className="px-6 py-4 whitespace-nowrap">
+                <td key={column.key} className={`px-4 py-4 md:px-6 md:py-4 whitespace-nowrap ${column.hideOnMobile ? 'hidden md:table-cell' : ''}`}>
                   {column.render(item)}
                 </td>
               ))}

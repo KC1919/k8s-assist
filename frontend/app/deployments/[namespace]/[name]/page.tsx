@@ -24,6 +24,7 @@ export default function DeploymentDetailsPage() {
     const fetchDeployment = async () => {
       try {
         const deploymentData = await apiClient.getDeploymentDetails(deploymentName, namespace);
+        console.log('Fetched deployment details:', deploymentData);
         setDeployment(deploymentData);
       } catch (err) {
         console.error('Failed to fetch deployment details:', err);

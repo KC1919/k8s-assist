@@ -20,39 +20,10 @@ class ApiClient {
     });
 
     if (!response.ok) {
-      let errorBody: string | undefined;
-
-      try {
-        const payload = await response.json();
-        if (payload && typeof payload === 'object') {
-          errorBody = payload.message || payload.error || JSON.stringify(payload);
-        } else {
-          errorBody = String(payload);
-        }
-      } catch {
-        const text = await response.text();
-        errorBody = text || `${response.statusText}`;
-      }
-
-      throw new Error(`API Error: ${response.status} ${response.statusText}${errorBody ? ` - ${errorBody}` : ''}`);
+      throw new Error(`API Error: ${response.status} ${response.statusText}`);
     }
 
     return response.json();
-  }
-
-  private normalizeDeployment(payload: any): Deployment {
-    const metadata = payload?.metadata ?? {};
-    const status = payload?.status ?? {};
-    const spec = payload?.spec ?? {};
-
-    return {
-      name: payload.name ?? metadata.name ?? '',
-      namespace: payload.namespace ?? metadata.namespace ?? '',
-      replicas: Number(payload.replicas ?? spec.replicas ?? 0),
-      availableReplicas: Number(payload.availableReplicas ?? status.availableReplicas ?? 0),
-      readyReplicas: Number(payload.readyReplicas ?? status.readyReplicas ?? 0),
-      updatedReplicas: Number(payload.updatedReplicas ?? status.updatedReplicas ?? 0),
-    };
   }
 
   // Namespace APIs
@@ -100,15 +71,14 @@ class ApiClient {
   // Deployment APIs
   async getDeployments(namespace?: string): Promise<Deployment[]> {
     const query = namespace ? `?namespace=${namespace}` : '';
-    const response = await this.request<{ success: boolean; message: string; data: Deployment[] | any[] }>(`/api/deployments${query}`);
-    const items = response.data ?? [];
-    return items.map((item) => this.normalizeDeployment(item));
+    const response = await this.request<{ success: boolean; message: string; data: Deployment[] }>(`/api/deployments${query}`);
+    return response.data;
   }
 
   async getDeploymentDetails(name: string, namespace?: string): Promise<Deployment> {
     const query = namespace ? `?namespace=${namespace}` : '';
-    const response = await this.request<{ success: boolean; message: string; data: Deployment | any }>(`/api/deployments/${name}${query}`);
-    return this.normalizeDeployment(response.data ?? response);
+    const response = await this.request<{ success: boolean; message: string; data: Deployment }>(`/api/deployments/${name}${query}`);
+    return response.data;
   }
 
   async scaleDeployment(name: string, replicas: number, namespace?: string): Promise<Deployment> {
